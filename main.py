@@ -36,6 +36,27 @@ def parse_demucs_output(raw):
         return {n: t[i] for i, n in enumerate(names)}
     return {"output": raw}
 
+@app.post("/separate")
+async def separate(file: UploadFile):
+    # Читаем аудио в тензор
+    data = await file.read()
+    audio, sr = torchaudio.load(io.BytesIO(data))
+
+    # Разделяем
+    raw = separator.separate_tensor(audio, sr)
+    stems = parse_demucs_output(raw)
+
+    # Сохраняем стемы в ZIP прямо в памяти
+    zip_buf = io.BytesIO()
+    with zipfile.ZipFile(zip_buf, "w") as zf:
+        for name, tensor in stems.items():
+            wav_buf = io.BytesIO()
+            torchaudio.save(wav_buf, tensor.cpu(), sr, format="wav")
+            zf.writestr(f"{name}.wav", wav_buf.getvalue())
+
+    zip_buf.seek(0)
+    return Response(zip_buf.read(), media_type="application/zip",
+                    headers={"Content-Disposition": "attachment; filename=stems.zip"})
 
 @app.get("/")
 def root():
