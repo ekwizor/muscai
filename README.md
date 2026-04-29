@@ -1,46 +1,73 @@
-# Audio Stem Separator
+# Music Source Separation
 
-Сервис для разделения музыкальных треков на составляющие — **vocals, drums, bass, other** — с помощью предобученной модели Demucs (архитектура htdemucs).  
-Включает REST API на FastAPI и простой веб-интерфейс на React для прослушивания и скачивания стемов.
+Веб-приложение для разделения аудио на дорожки (вокал, бас, ударные, другие) с помощью Demucs.
 
-## Возможности
+---
 
- - Загрузка аудиофайла (MP3/WAV) через веб-интерфейс и получение ZIP-архива со стемами  
- -  Скачивание каждого стема отдельно или полного архива  
- -  Прослушивание стемов прямо в браузере  
- -  Оценка качества разделения на тестовом наборе MUSDB18 (метрики SDR, SIR, SAR)  
- -  Jupyter Notebook с демонстрацией загрузки своего трека и анализом результата  
+## ✨ Возможности
 
-## Установка
+- Разделение на 4 stems: vocals, bass, drums, other
+- Веб-интерфейс на React + Vite
+- API на FastAPI с автоматической документацией
+- Поддержка GPU (CUDA) для ускорения обработки
 
-###
+---
 
-```bash```
-git clone https://github.com/ekwizor/muscai
+## 🚀 Быстрый старт
+
+### Требования
+
+| Программа | Версия | Зачем |
+|-----------|--------|-------|
+| **Python** | 3.10+ | Бэкенд |
+| **Node.js** | 18+ (LTS) | Фронтенд (React/Vite) |
+| **Git** | любая | Клонирование репозитория |
+| **ffmpeg** | любой | Обработка аудио ([скачать](https://ffmpeg.org/download.html)) |
+
+> **Windows**: При установке Python поставьте галочку ✅ **Add Python to PATH**.
+
+---
+
+### 🔹 Вариант 1: Через venv (универсальный)
+
+```cmd
+:: 1. Клонируйте репозиторий
+git clone https://github.com/ekwizor/muscai.git
 cd muscai
 
-### 2. Установите зависимости Python
+:: 2. Создайте виртуальное окружение
+python -m venv venv
 
-pip install -r requirements.txt
+:: 3. Активируйте его
+:: Windows CMD:
+venv\Scripts\activate.bat
+:: PowerShell:
+venv\Scripts\Activate.ps1
+:: macOS/Linux:
+source venv/bin/activate
 
-```Для работы с GPU потребуется PyTorch с поддержкой CUDA.```
+:: 4. Установите зависимости (с CUDA)
+pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu121
 
-### 3. Frontend (React)
-
+:: 5. Установите зависимости фронтенда
 cd audio-ui
 npm install
+cd ..
 
-### Запуск
-
-```FastAPI```
+:: 6. Запуск backend
 python main.py
+- Сервер запустится на http://localhost:8000
+- Документация API: http://localhost:8000/docs
 
-Сервер стартует по адресу http://localhost:8000.
-Документация API доступна интерактивно по /docs
-
-```Frontend```
-
+:: 7. Запуск frontend
+cd audio-ui
 npm run dev
+- Приложение откроется на http://localhost:5173
 
-Приложение откроется по умолчанию на http://localhost:5173.
-Убедитесь, что в файле App.jsx переменная API_URL указывает на работающий бэкенд (по умолчанию http://localhost:8000/separate).
+---
+
+Спецификации ПК:
+4060 8gb
+16 gb VRAM
+R5 5600
+
