@@ -36,7 +36,7 @@ git clone https://github.com/ekwizor/muscai.git
 cd muscai
 
 :: 2. Создайте виртуальное окружение
-python -m venv venv
+py -m venv venv
 
 :: 3. Активируйте его
 :: Windows CMD:
@@ -49,10 +49,12 @@ source venv/bin/activate
 :: 4. Установите зависимости (с CUDA)
 pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu121
 
+:: 5. Установка Demucs без зависимостей
+
+pip install --no-deps git+https://github.com/facebookresearch/demucs.git
+
 :: 5. Установите зависимости фронтенда
-cd audio-ui
-npm install
-cd ..
+cd audio-ui && npm install && cd ..
 
 :: 6. Запуск backend
 python main.py
@@ -60,8 +62,7 @@ python main.py
 - Документация API: http://localhost:8000/docs
 
 :: 7. Запуск frontend
-cd audio-ui
-npm run dev
+cd audio-ui && npm run dev
 - Приложение откроется на http://localhost:5173
 
 ---
