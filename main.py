@@ -19,6 +19,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Загружаем модель один раз при старте
+device = "cuda" if torch.cuda.is_available() else "cpu"
+separator = Separator(model="htdemucs", device=device)
+
+def parse_demucs_output(raw):
+    """Делает словарь из любого ответа Demucs"""
+    if isinstance(raw, dict):
+        return raw
+    if isinstance(raw, tuple):
+        d = next((x for x in raw if isinstance(x, dict)), None)
+        if d:
+            return d
+        t = raw[0]
+        names = ["vocals", "drums", "bass", "other"][:t.shape[0]]
+        return {n: t[i] for i, n in enumerate(names)}
+    return {"output": raw}
+
+
 @app.get("/")
 def root():
     return {"message": "Separator is running"}
